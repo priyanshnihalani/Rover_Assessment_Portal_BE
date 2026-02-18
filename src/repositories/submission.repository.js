@@ -4,6 +4,7 @@ const Submission = require("../modals/submission.modal");
 const Answer = require("../modals/answer.modal");
 
 exports.submitPaper = async ({ code, studentEmail, answers }) => {
+
     const paper = await Paper.findOne({
         where: { code },
         include: [{ model: Question }],
@@ -14,6 +15,14 @@ exports.submitPaper = async ({ code, studentEmail, answers }) => {
     let score = 0;
     let total = 0;
 
+    // 👉 Get only questionIds attempted / shown
+    const attemptedQuestionIds = answers.map(a => a.questionId);
+
+    // 👉 Filter questions based on limit selection
+    const questionsToEvaluate = paper.Questions
+        .filter(q => attemptedQuestionIds.includes(q.id))
+        .slice(0, paper.questionsToShow); // safety limit
+
     const submission = await Submission.create({
         paperId: paper.id,
         studentEmail,
@@ -21,8 +30,10 @@ exports.submitPaper = async ({ code, studentEmail, answers }) => {
         totalMarks: 0,
     });
 
-    for (const q of paper.Questions) {
-        const userAns = answers.find((a) => a.questionId === q.id);
+    for (const q of questionsToEvaluate) {
+
+        const userAns = answers.find(a => a.questionId === q.id);
+
         total += q.points;
 
         let isCorrect = false;
