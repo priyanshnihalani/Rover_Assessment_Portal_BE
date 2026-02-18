@@ -8,6 +8,7 @@ exports.createPaper = async (payload) => {
         code: payload.code,
         title: payload.title,
         timeLimit: payload.timeLimit,
+        questionsToShow: payload.questionsToShow
     });
 
     for (const q of payload.questions) {
