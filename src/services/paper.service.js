@@ -27,8 +27,8 @@ exports.deactivatePaperService = async (paperId) => {
   return paperRepo.deactivatePaper(paperId);
 };
 
-exports.startExam = async (name, email, code) => {
-  const result = await paperRepo.findActivePaperWithQuestions(name, email, code);
+exports.startExam = async (email, code) => {
+  const result = await paperRepo.findActivePaperWithQuestions(email, code);
 
   if (!result) {
     throw new Error("Invalid or inactive paper code");
