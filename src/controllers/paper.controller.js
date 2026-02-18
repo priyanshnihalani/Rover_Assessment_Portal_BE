@@ -84,16 +84,16 @@ exports.deactivatePaper = async (req, res) => {
 
 exports.startExam = async (req, res) => {
     try {
-        const { email, code } = req.body;
+        const { name, email, code } = req.body;
 
-        if (!code || !email) {
+        if (!name || !code || !email) {
             return res.status(400).json({
                 success: false,
                 message: "Email and paper code are required",
             });
         }
 
-        const data = await startExam(email, code);
+        const data = await startExam(name, email, code);
 
         res.json({
             success: true,

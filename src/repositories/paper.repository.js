@@ -136,7 +136,7 @@ exports.getActivePaper = async () => {
     return Paper.findOne({ where: { status: "ACTIVE" } });
 };
 
-exports.findActivePaperWithQuestions = async (email, code) => {
+exports.findActivePaperWithQuestions = async (name, email, code) => {
     const paper = await Paper.findOne({
         where: { code, status: "ACTIVE" },
         include: [{ model: Question, include: [{ model: Option }] }],
@@ -146,7 +146,7 @@ exports.findActivePaperWithQuestions = async (email, code) => {
 
     const alreadySubmitted = await Submission.findOne({
         where: {
-            studentName: "",
+            studentName: name,
             paperId: paper.id,
             studentEmail: email,
         },
