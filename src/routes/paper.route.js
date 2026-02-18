@@ -9,6 +9,7 @@ router.get("/active", getActivePaper);
 router.post("/start", startExam);
 router.get("/getAllPapers", getPapers)
 router.put("/update/:id", updatePaper)
-router.post("/deletePaper", deletePaper)
-router.post("/deleteQuestion", deleteQuestion)
+router.post("/deletePaper/:paperId", deletePaper)
+router.post("/deleteQuestion/:questionId", deleteQuestion)
+
 module.exports = router

@@ -42,9 +42,9 @@ exports.deletePaper = async (req, res) => {
 
 exports.deleteQuestion = async (req, res) => {
     try {
-        const { paperId } = req.params;
+        const {questionId } = req.params;
 
-        const result = await deleteQuestion(paperId);
+        const result = await deleteQuestion(questionId);
 
         res.status(200).json(result);
     } catch (err) {
