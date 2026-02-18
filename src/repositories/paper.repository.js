@@ -210,5 +210,19 @@ exports.deleteQuestion = async (questionId) => {
 };
 
 exports.getAllPapers = async () => {
-    return Paper.findAll({ where: { softDelete: false }, include: [{ model: Question, include: [{ model: Option }] }] })
+    return Paper.findAll({
+        where: { softDelete: false },
+        include: [
+            {
+                model: Question,
+                where: { softDelete: false },
+                include: [
+                    {
+                        model: Option
+                    }
+                ]
+            }
+        ]
+    });
+
 }
