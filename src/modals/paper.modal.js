@@ -30,6 +30,7 @@ const Paper = sequelize.define("Paper", {
         allowNull: false,
         defaultValue: 10, 
     },
+    softDelete: {type: DataTypes.BOOLEAN, defaultValue: false}
 });
 
 module.exports = Paper;

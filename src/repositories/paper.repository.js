@@ -109,8 +109,6 @@ exports.updatePaper = async (payload) => {
     return { success: true };
 };
 
-
-
 exports.activatePaper = async (paperId) => {
     await Paper.update({ status: "DRAFT" }, { where: {} });
 
@@ -137,7 +135,7 @@ exports.getActivePaper = async () => {
     return Paper.findOne({ where: { status: "ACTIVE" } });
 };
 
-exports.findActivePaperWithQuestions = async (email, code) => {
+exports.findActivePaperWithQuestions = async (name, email, code) => {
     const paper = await Paper.findOne({
         where: { code, status: "ACTIVE" },
         include: [{ model: Question, include: [{ model: Option }] }],
@@ -147,6 +145,7 @@ exports.findActivePaperWithQuestions = async (email, code) => {
 
     const alreadySubmitted = await Submission.findOne({
         where: {
+            studentName: name,
             paperId: paper.id,
             studentEmail: email,
         },
@@ -167,6 +166,48 @@ exports.findActivePaperWithQuestions = async (email, code) => {
     };
 };
 
+exports.deletePaper = async (paperId) => {
+    const paper = await Paper.findByPk(paperId);
+
+    if (!paper) {
+        throw new Error("Paper not found");
+    }
+
+    await Paper.update(
+        {
+            softDelete: true,
+        },
+        {
+            where: { id: paperId },
+        }
+    );
+
+    return {
+        success: true,
+        message: "Paper deleted successfully",
+    };
+};
+
+exports.deleteQuestion = async (questionId) => {
+    const question = await Question.findByPk(questionId);
+
+    if (!question) {
+        throw new Error("Paper not found");
+    }
+    await Question.update(
+        {
+            softDelete: true,
+        },
+        {
+            where: { id: questionId },
+        }
+    );
+    return {
+        success: true,
+        message: "Question deleted successfully",
+    };
+};
+
 exports.getAllPapers = async () => {
-    return Paper.findAll({ include: [{ model: Question, include: [{ model: Option }] }] })
+    return Paper.findAll({ where: { softDelete: false }, include: [{ model: Question, include: [{ model: Option }] }] })
 }

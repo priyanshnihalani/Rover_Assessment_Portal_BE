@@ -7,6 +7,7 @@ const Submission = sequelize.define("Submission", {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
+    studentName: DataTypes.STRING,
     studentEmail: DataTypes.STRING,
     score: DataTypes.INTEGER,
     totalMarks: DataTypes.INTEGER,

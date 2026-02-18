@@ -27,8 +27,8 @@ exports.deactivatePaperService = async (paperId) => {
   return paperRepo.deactivatePaper(paperId);
 };
 
-exports.startExam = async (email, code) => {
-  const result = await paperRepo.findActivePaperWithQuestions(email, code);
+exports.startExam = async (name, email, code) => {
+  const result = await paperRepo.findActivePaperWithQuestions(name, email, code);
 
   if (!result) {
     throw new Error("Invalid or inactive paper code");
@@ -70,7 +70,13 @@ exports.startExam = async (email, code) => {
 };
 
 
+exports.deletePaper = async (paperId) => {
+  return paperRepo.deletePaper(paperId)
+}
 
+exports.deleteQuestion = async (paperId) => {
+  return paperRepo.deleteQuestion(paperId)
+}
 
 exports.getActivePaperService = async () => {
   return paperRepo.getActivePaper();

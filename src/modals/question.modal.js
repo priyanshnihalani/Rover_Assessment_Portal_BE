@@ -10,6 +10,7 @@ const Question = sequelize.define("Question", {
     prompt: DataTypes.TEXT,
     correctOption: DataTypes.STRING(1),
     points: DataTypes.INTEGER,
+    softDelete: {type: DataTypes.BOOLEAN, defaultValue: false}
 });
 
 module.exports = Question

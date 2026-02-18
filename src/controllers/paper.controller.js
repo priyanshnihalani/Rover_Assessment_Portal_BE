@@ -1,4 +1,4 @@
-const { createPaperService, updatePaperService, startExam, deactivatePaperService, activatePaperService, getActivePaperService, getAllPapers } = require("../services/paper.service.js");
+const {deleteQuestion, createPaperService, updatePaperService, startExam, deactivatePaperService, activatePaperService, getActivePaperService, getAllPapers, deletePaper } = require("../services/paper.service.js");
 
 exports.createPaper = async (req, res) => {
     try {
@@ -24,6 +24,36 @@ exports.getPapers = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.deletePaper = async (req, res) => {
+    try {
+        const { paperId } = req.params;
+
+        const result = await deletePaper(paperId);
+
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+};
+
+exports.deleteQuestion = async (req, res) => {
+    try {
+        const { paperId } = req.params;
+
+        const result = await deleteQuestion(paperId);
+
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+};
 
 exports.activatePaper = async (req, res) => {
     try {
@@ -54,16 +84,16 @@ exports.deactivatePaper = async (req, res) => {
 
 exports.startExam = async (req, res) => {
     try {
-        const { email, code } = req.body;
+        const { name, email, code } = req.body;
 
-        if (!code || !email) {
+        if (!name || !code || !email) {
             return res.status(400).json({
                 success: false,
                 message: "Email and paper code are required",
             });
         }
 
-        const data = await startExam(email, code);
+        const data = await startExam(name, email, code);
 
         res.json({
             success: true,
