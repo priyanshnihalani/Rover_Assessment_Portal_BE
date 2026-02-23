@@ -1,25 +1,21 @@
-const Paper = require("../modals/paper.modal");
-const Question = require("../modals/question.modal");
-const Submission = require("../modals/submission.modal");
-const Answer = require("../modals/answer.modal");
+const Paper = require('../modals/paper.modal');
+const Question = require('../modals/question.modal');
+const Submission = require('../modals/submission.modal');
+const Answer = require('../modals/answer.modal');
 
 exports.submitPaper = async ({ code, studentName, studentEmail, answers }) => {
-
     const paper = await Paper.findOne({
         where: { code },
         include: [{ model: Question }],
     });
 
-    if (!paper) throw new Error("Invalid paper code");
+    if (!paper) throw new Error('Invalid paper code');
 
     let score = 0;
     let total = 0;
 
-    const attemptedQuestionIds = answers.map(a => a.questionId);
-
-    const questionsToEvaluate = paper.Questions
-        .filter(q => attemptedQuestionIds.includes(q.id))
-        .slice(0, paper.questionsToShow); 
+    const attemptedQuestionIds = answers.map((a) => a.questionId);
+    const questionsToEvaluate = paper.Questions.filter((q) => attemptedQuestionIds.includes(q.id)).slice(0, paper.questionsToShow);
 
     const submission = await Submission.create({
         paperId: paper.id,
@@ -29,11 +25,14 @@ exports.submitPaper = async ({ code, studentName, studentEmail, answers }) => {
         totalMarks: 0,
     });
 
+    const totalMarks = paper.Questions.filter((q) => attemptedQuestionIds.includes(q.id));
+
+    for (const p of totalMarks) {
+        total += p.points;
+    }
+
     for (const q of questionsToEvaluate) {
-
-        const userAns = answers.find(a => a.questionId === q.id);
-
-        total += q.points;
+        const userAns = answers.find((a) => a.questionId === q.id);
 
         let isCorrect = false;
         let marks = 0;
@@ -62,5 +61,5 @@ exports.submitPaper = async ({ code, studentName, studentEmail, answers }) => {
 };
 
 exports.submissions = async (id) => {
-    return await Submission.findAll({ where: { paperId: id } })
-}
+    return await Submission.findAll({ where: { paperId: id } });
+};

@@ -1,14 +1,14 @@
-const Paper = require("../modals/paper.modal");
-const Question = require("../modals/question.modal");
-const Option = require("../modals/option.modal");
-const Submission = require("../modals/submission.modal");
+const Paper = require('../modals/paper.modal');
+const Question = require('../modals/question.modal');
+const Option = require('../modals/option.modal');
+const Submission = require('../modals/submission.modal');
 
 exports.createPaper = async (payload) => {
     const paper = await Paper.create({
         code: payload.code,
         title: payload.title,
         timeLimit: payload.timeLimit,
-        questionsToShow: payload.questionsToShow
+        questionsToShow: payload.questionsToShow,
     });
 
     for (const q of payload.questions) {
@@ -24,7 +24,7 @@ exports.createPaper = async (payload) => {
                 questionId: question.id,
                 label: o.label,
                 text: o.text,
-            }))
+            })),
         );
     }
 
@@ -34,10 +34,7 @@ exports.createPaper = async (payload) => {
 exports.updatePaper = async (payload) => {
     const { id: paperId, title, timeLimit, questionsToShow, questions } = payload;
 
-    await Paper.update(
-        { title, timeLimit, questionsToShow },
-        { where: { id: paperId } }
-    );
+    await Paper.update({ title, timeLimit, questionsToShow }, { where: { id: paperId } });
 
     const existingQuestions = await Question.findAll({
         where: { paperId },
@@ -58,7 +55,7 @@ exports.updatePaper = async (payload) => {
                     points: q.points,
                     correctOption: q.correctOption,
                 },
-                { where: { id: q.id } }
+                { where: { id: q.id } },
             );
 
             question = await Question.findByPk(q.id, {
@@ -80,10 +77,7 @@ exports.updatePaper = async (payload) => {
             if (o.id) {
                 incomingOptionIds.add(o.id);
 
-                await Option.update(
-                    { label: o.label, text: o.text },
-                    { where: { id: o.id } }
-                );
+                await Option.update({ label: o.label, text: o.text }, { where: { id: o.id } });
             } else {
                 await Option.create({
                     questionId: question.id,
@@ -111,34 +105,26 @@ exports.updatePaper = async (payload) => {
 };
 
 exports.activatePaper = async (paperId) => {
-    await Paper.update({ status: "DRAFT" }, { where: {} });
+    // await Paper.update({ status: "DRAFT" }, { where: {} });
 
-    const paper = await Paper.update(
-        { status: "ACTIVE" },
-        { where: { id: paperId } }
-    );
+    const paper = await Paper.update({ status: 'ACTIVE' }, { where: { id: paperId } });
 
     return paper;
 };
 
 exports.deactivatePaper = async (paperId) => {
-
-    const paper = await Paper.update(
-        { status: "DRAFT" },
-        { where: { id: paperId } }
-    );
+    const paper = await Paper.update({ status: 'DRAFT' }, { where: { id: paperId } });
 
     return paper;
 };
 
-
 exports.getActivePaper = async () => {
-    return Paper.findOne({ where: { status: "ACTIVE" } });
+    return Paper.findOne({ where: { status: 'ACTIVE' } });
 };
 
 exports.findActivePaperWithQuestions = async (name, email, code) => {
     const paper = await Paper.findOne({
-        where: { code, status: "ACTIVE" },
+        where: { code, status: 'ACTIVE' },
         include: [{ model: Question, include: [{ model: Option }] }],
     });
 
@@ -171,7 +157,7 @@ exports.deletePaper = async (paperId) => {
     const paper = await Paper.findByPk(paperId);
 
     if (!paper) {
-        throw new Error("Paper not found");
+        throw new Error('Paper not found');
     }
 
     await Paper.update(
@@ -180,12 +166,12 @@ exports.deletePaper = async (paperId) => {
         },
         {
             where: { id: paperId },
-        }
+        },
     );
 
     return {
         success: true,
-        message: "Paper deleted successfully",
+        message: 'Paper deleted successfully',
     };
 };
 
@@ -193,7 +179,7 @@ exports.deleteQuestion = async (questionId) => {
     const question = await Question.findByPk(questionId);
 
     if (!question) {
-        throw new Error("Paper not found");
+        throw new Error('Paper not found');
     }
     await Question.update(
         {
@@ -201,11 +187,11 @@ exports.deleteQuestion = async (questionId) => {
         },
         {
             where: { id: questionId },
-        }
+        },
     );
     return {
         success: true,
-        message: "Question deleted successfully",
+        message: 'Question deleted successfully',
     };
 };
 
@@ -218,11 +204,10 @@ exports.getAllPapers = async () => {
                 where: { softDelete: false },
                 include: [
                     {
-                        model: Option
-                    }
-                ]
-            }
-        ]
+                        model: Option,
+                    },
+                ],
+            },
+        ],
     });
-
-}
+};
