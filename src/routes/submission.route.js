@@ -4,5 +4,5 @@ const express = require("express")
 const router = express.Router();
 
 router.post("/submit", submitPaper);
-router.get("/getSubmissions/:id", submissions)
+router.post("/getSubmissions/:id", submissions)
 module.exports = router

@@ -4,6 +4,6 @@ exports.submitPaperService = async (data) => {
   return submissionRepo.submitPaper(data);
 };
 
-exports.submissionsService = async (id) => {
-  return submissionRepo.submissions(id)
+exports.submissionsService = async (id,date) => {
+  return submissionRepo.submissions(id,date)
 }

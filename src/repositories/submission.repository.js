@@ -2,6 +2,7 @@ const Paper = require('../modals/paper.modal');
 const Question = require('../modals/question.modal');
 const Submission = require('../modals/submission.modal');
 const Answer = require('../modals/answer.modal');
+const { Op } = require('sequelize');
 
 exports.submitPaper = async ({ code, studentName, studentEmail, answers }) => {
     const paper = await Paper.findOne({
@@ -60,6 +61,11 @@ exports.submitPaper = async ({ code, studentName, studentEmail, answers }) => {
     return { score, total };
 };
 
-exports.submissions = async (id) => {
-    return await Submission.findAll({ where: { paperId: id } });
+exports.submissions = async (id,date) => {
+const startDate = new Date(date);
+startDate.setHours(0, 0, 0, 0);
+const endDate = new Date(date);
+endDate.setHours(23, 59, 59, 999);
+
+    return await Submission.findAll({ where: { paperId: id,createdAt:{[Op.between]:[startDate,endDate]} } });
 };

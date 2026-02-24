@@ -15,7 +15,7 @@ exports.submitPaper = async (req, res) => {
 
 exports.submissions = async (req, res) => {
   try {
-    const result = await submissionsService(req.params.id)
+    const result = await submissionsService(req.params.id,req.body.currentDate)
     res.json({
       success: true,
       result,
